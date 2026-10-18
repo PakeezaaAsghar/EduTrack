@@ -1,0 +1,6 @@
+{
+  "name": "EduTrack — Smart Student Management System",
+  "description": "A comprehensive, animated education management platform featuring multi-role portals (Admin, Teacher, Student), automated attendance, grade calculation, conflict detection, academic analytics, and student reporting.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
