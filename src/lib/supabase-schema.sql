@@ -1,6 +1,7 @@
 -- =========================================================================
 -- EduTrack Database Schema for Supabase
--- Separate tables for Student, Teacher, and Admin accounts
+-- Separate tables for Student, Teacher, Admin accounts, Contact Messages,
+-- and AI Chatbot interaction logs.
 --
 -- How to apply:
 -- 1. Go to Supabase Dashboard (Project: bijklibeveykmyjbzcik)
@@ -49,7 +50,30 @@ CREATE TABLE IF NOT EXISTS public.admins_profile (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- 4. Academic Courses Table
+-- 4. Contact Inquiries Table
+CREATE TABLE IF NOT EXISTS public.contact_messages (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    email TEXT NOT NULL,
+    subject TEXT NOT NULL,
+    message TEXT NOT NULL,
+    role TEXT NOT NULL DEFAULT 'Visitor',
+    department TEXT NOT NULL DEFAULT 'General Support',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- 5. AI Chatbot Interaction & Question Logs Table
+CREATE TABLE IF NOT EXISTS public.chatbot_queries (
+    id TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL DEFAULT 'anonymous',
+    user_name TEXT NOT NULL DEFAULT 'Guest Scholar',
+    user_role TEXT NOT NULL DEFAULT 'visitor',
+    query TEXT NOT NULL,
+    ai_response TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- 6. Academic Courses Table
 CREATE TABLE IF NOT EXISTS public.courses (
     id TEXT PRIMARY KEY,
     code TEXT NOT NULL,
@@ -61,7 +85,7 @@ CREATE TABLE IF NOT EXISTS public.courses (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- 5. Attendance Records Table
+-- 7. Attendance Records Table
 CREATE TABLE IF NOT EXISTS public.attendance (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     student_id TEXT NOT NULL,
@@ -71,7 +95,7 @@ CREATE TABLE IF NOT EXISTS public.attendance (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- 6. Academic Grades Table
+-- 8. Academic Grades Table
 CREATE TABLE IF NOT EXISTS public.grades (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     student_id TEXT NOT NULL,
@@ -88,6 +112,8 @@ CREATE TABLE IF NOT EXISTS public.grades (
 ALTER TABLE public.students_profile ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.teachers_profile ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.admins_profile ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.contact_messages ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.chatbot_queries ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.courses ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.attendance ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.grades ENABLE ROW LEVEL SECURITY;
@@ -102,6 +128,12 @@ CREATE POLICY "Public Read/Write Access for teachers_profile" ON public.teachers
 DROP POLICY IF EXISTS "Public Read/Write Access for admins_profile" ON public.admins_profile;
 CREATE POLICY "Public Read/Write Access for admins_profile" ON public.admins_profile FOR ALL USING (true) WITH CHECK (true);
 
+DROP POLICY IF EXISTS "Public Read/Write Access for contact_messages" ON public.contact_messages;
+CREATE POLICY "Public Read/Write Access for contact_messages" ON public.contact_messages FOR ALL USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Public Read/Write Access for chatbot_queries" ON public.chatbot_queries;
+CREATE POLICY "Public Read/Write Access for chatbot_queries" ON public.chatbot_queries FOR ALL USING (true) WITH CHECK (true);
+
 DROP POLICY IF EXISTS "Public Read/Write Access for courses" ON public.courses;
 CREATE POLICY "Public Read/Write Access for courses" ON public.courses FOR ALL USING (true) WITH CHECK (true);
 
@@ -111,7 +143,9 @@ CREATE POLICY "Public Read/Write Access for attendance" ON public.attendance FOR
 DROP POLICY IF EXISTS "Public Read/Write Access for grades" ON public.grades;
 CREATE POLICY "Public Read/Write Access for grades" ON public.grades FOR ALL USING (true) WITH CHECK (true);
 
--- Helpful indexes for rapid email lookups
+-- Helpful indexes for rapid lookups
 CREATE INDEX IF NOT EXISTS idx_students_profile_email ON public.students_profile(email);
 CREATE INDEX IF NOT EXISTS idx_teachers_profile_email ON public.teachers_profile(email);
 CREATE INDEX IF NOT EXISTS idx_admins_profile_email ON public.admins_profile(email);
+CREATE INDEX IF NOT EXISTS idx_contact_messages_created_at ON public.contact_messages(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_chatbot_queries_created_at ON public.chatbot_queries(created_at DESC);

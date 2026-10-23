@@ -27,39 +27,6 @@ import teacherAnalyticsImage from '../assets/images/teacher_classroom_analytics_
 import studentsStemImage from '../assets/images/students_collaborating_stem_1792272726934.jpg';
 import campusHeroImage from '../assets/images/modern_university_hero_1792343735348.jpg';
 
-// Campus Live Marquee Ticker
-const CampusLiveTicker: React.FC = () => {
-  const tickerItems = [
-    { icon: '🟢', text: 'Live Timetable Radar: 0 Room & Faculty Collisions across 48 Lecture Halls' },
-    { icon: '⚡', text: '10-Second Digital Roll Call: Average completion in 8.4s per course roster' },
-    { icon: '🎓', text: 'Weighted Assessment Engine: Automated GPA 4.0 letter grade mapping active' },
-    { icon: '🛡️', text: 'FERPA Segregation: Strict role-isolated permissions for 4,800+ scholars' },
-    { icon: '📈', text: 'Spring Semester Health: 99.4% overall campus attendance compliance' },
-  ];
-
-  return (
-    <div className="relative w-full overflow-hidden py-2 bg-gradient-to-r from-indigo-950 via-slate-900 to-indigo-950 border-y border-indigo-500/20 text-xs text-slate-300">
-      <div className="flex items-center">
-        <div className="flex items-center gap-1.5 px-3 py-0.5 bg-indigo-600/80 text-white font-mono text-[10px] font-bold uppercase tracking-wider rounded-r-md shrink-0 shadow-xs z-10">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping mr-0.5" />
-          Campus Pulse
-        </div>
-        <div className="overflow-hidden whitespace-nowrap flex-1 relative mask-linear">
-          <div className="animate-marquee flex items-center gap-8 pl-4">
-            {[...tickerItems, ...tickerItems].map((item, idx) => (
-              <div key={idx} className="inline-flex items-center gap-2 text-slate-300 hover:text-white transition-colors cursor-default">
-                <span>{item.icon}</span>
-                <span className="font-medium">{item.text}</span>
-                <span className="text-slate-600 ml-4 font-bold">/</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
 // Animated rotating text component for hero headline with kinetic word transition & badge
 const AnimatedTextRotator: React.FC = () => {
   const phrases = [
@@ -319,9 +286,6 @@ export const HomePage: React.FC = () => {
       
       {/* GLOBAL SCROLL PROGRESS INDICATOR */}
       <ScrollProgressBar />
-
-      {/* CAMPUS LIVE TICKER: REAL-TIME MARQUEE RIBBON */}
-      <CampusLiveTicker />
 
       {/* SECTION 1: HERO SECTION WITH ATMOSPHERIC LIGHTING & LIVE PREVIEW */}
       <section className="relative pt-4 sm:pt-10 pb-8">

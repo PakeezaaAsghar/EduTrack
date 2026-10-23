@@ -17,6 +17,7 @@ import { AdminDashboard } from './components/dashboard/AdminDashboard';
 import { TeacherDashboard } from './components/dashboard/TeacherDashboard';
 import { StudentDashboard } from './components/dashboard/StudentDashboard';
 import { CommandPaletteModal } from './components/common/CommandPaletteModal';
+import { AIChatbot } from './components/common/AIChatbot';
 import { Lock, ShieldAlert, ArrowRight, UserPlus, LogIn, AlertCircle } from 'lucide-react';
 import { motion } from 'motion/react';
 
@@ -350,6 +351,7 @@ const AppContent: React.FC = () => {
         isOpen={isCommandPaletteOpen} 
         onClose={() => setIsCommandPaletteOpen(false)} 
       />
+      <AIChatbot />
     </div>
   );
 };

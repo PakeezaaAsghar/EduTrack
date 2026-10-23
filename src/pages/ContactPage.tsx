@@ -4,9 +4,10 @@ import {
   Mail, MapPin, Phone, Send, CheckCircle, 
   HelpCircle, ArrowRight, Clock, ShieldCheck 
 } from 'lucide-react';
+import { saveContactMessageToSupabase } from '../lib/supabase';
 
 export const ContactPage: React.FC = () => {
-  const { navigate, addNotification } = useEduTrack();
+  const { navigate, addNotification, currentUser } = useEduTrack();
 
   const [formData, setFormData] = useState({
     name: '',
@@ -42,6 +43,19 @@ export const ContactPage: React.FC = () => {
     if (!validate()) return;
 
     setSubmitting(true);
+
+    // Save contact inquiry directly into Supabase contact_messages table
+    saveContactMessageToSupabase({
+      name: formData.name,
+      email: formData.email,
+      subject: formData.subject,
+      message: formData.message,
+      role: currentUser?.role || 'Visitor',
+      department: currentUser?.department || 'General Inquiry',
+    }).catch(err => {
+      console.warn('[Supabase Contact Save Error]:', err);
+    });
+
     setTimeout(() => {
       setSubmitting(false);
       setSubmitted(true);
@@ -51,7 +65,7 @@ export const ContactPage: React.FC = () => {
         message: `From ${formData.name} (${formData.email})`,
         type: 'info'
       });
-    }, 800);
+    }, 600);
   };
 
   return (

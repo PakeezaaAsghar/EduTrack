@@ -1291,21 +1291,31 @@ export const AdminDashboard: React.FC = () => {
                   <span className={`w-2.5 h-2.5 rounded-full ${supabaseConnected ? 'bg-emerald-500 ring-4 ring-emerald-500/20' : 'bg-amber-500 ring-4 ring-amber-500/20'}`} />
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 pt-1">
                   <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
                     <p className="text-[10px] font-mono text-indigo-600 dark:text-indigo-400 uppercase font-semibold">Table 1</p>
                     <p className="text-xs font-bold text-slate-900 dark:text-white">students_profile</p>
-                    <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">Syncs student signups, GPA, attendance & year</p>
+                    <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">Student signups, GPA, attendance & year</p>
                   </div>
                   <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
                     <p className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 uppercase font-semibold">Table 2</p>
                     <p className="text-xs font-bold text-slate-900 dark:text-white">teachers_profile</p>
-                    <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">Syncs faculty signups, titles & office hours</p>
+                    <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">Faculty signups, titles & office hours</p>
                   </div>
                   <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
                     <p className="text-[10px] font-mono text-amber-600 dark:text-amber-400 uppercase font-semibold">Table 3</p>
                     <p className="text-xs font-bold text-slate-900 dark:text-white">admins_profile</p>
-                    <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">Syncs administrator accounts & permissions</p>
+                    <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">Administrator accounts & permissions</p>
+                  </div>
+                  <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                    <p className="text-[10px] font-mono text-sky-600 dark:text-sky-400 uppercase font-semibold">Table 4</p>
+                    <p className="text-xs font-bold text-slate-900 dark:text-white">contact_messages</p>
+                    <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">Support & visitor inquiries from contact form</p>
+                  </div>
+                  <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 sm:col-span-2 lg:col-span-2">
+                    <p className="text-[10px] font-mono text-purple-600 dark:text-purple-400 uppercase font-semibold">Table 5</p>
+                    <p className="text-xs font-bold text-slate-900 dark:text-white">chatbot_queries</p>
+                    <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">All questions asked to AI Chatbot with user role & timestamps</p>
                   </div>
                 </div>
               </div>
