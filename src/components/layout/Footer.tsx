@@ -99,6 +99,18 @@ export const Footer: React.FC = () => {
                 </button>
               </li>
               <li>
+                <button onClick={() => navigate('/timetable')} className="hover:text-white transition-colors flex items-center gap-1.5">
+                  <span>Timetable & Room Radar</span>
+                  <span className="text-[9px] font-mono px-1 rounded bg-indigo-500/20 text-indigo-300">Live</span>
+                </button>
+              </li>
+              <li>
+                <button onClick={() => navigate('/planner')} className="hover:text-white transition-colors flex items-center gap-1.5">
+                  <span>GPA Target & Degree Planner</span>
+                  <span className="text-[9px] font-mono px-1 rounded bg-purple-500/20 text-purple-300">Tool</span>
+                </button>
+              </li>
+              <li>
                 <button onClick={() => navigate('/how-it-works')} className="hover:text-white transition-colors">
                   How It Works
                 </button>

@@ -9,6 +9,16 @@ import {
   Layers, Search, RefreshCw, ChevronRight, Mail, ExternalLink,
   Info, AlertCircle
 } from 'lucide-react';
+import { 
+  AnimatedCounter, 
+  AnimatedProgressBar, 
+  AnimatedBarItem, 
+  AnimatedCircularProgress, 
+  InteractiveCard, 
+  StaggerContainer,
+  StaggerItem 
+} from '../common/MotionComponents';
+import { motion, AnimatePresence } from 'motion/react';
 
 interface AdminAnalyticsViewProps {
   setActiveTab?: (tab: string) => void;
@@ -402,11 +412,11 @@ export const AdminAnalyticsView: React.FC<AdminAnalyticsViewProps> = ({ setActiv
         </div>
       </div>
 
-      {/* ======================= TOP 5 EXECUTIVE KPI CARDS ======================= */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      {/* ======================= TOP 5 EXECUTIVE KPI CARDS (ANIMATED & INTERACTIVE) ======================= */}
+      <StaggerContainer staggerDelay={0.06} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         
         {/* Retention Rate */}
-        <div className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col justify-between space-y-3">
+        <InteractiveCard hoverY={-4} className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col justify-between space-y-3 cursor-default">
           <div className="flex items-center justify-between text-slate-500 text-xs font-semibold uppercase">
             <span>Good Standing</span>
             <Users className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
@@ -414,7 +424,7 @@ export const AdminAnalyticsView: React.FC<AdminAnalyticsViewProps> = ({ setActiv
           <div>
             <div className="flex items-baseline gap-2">
               <span className="text-2xl font-bold font-mono tabular-nums text-slate-900 dark:text-white">
-                {retentionRate}%
+                <AnimatedCounter value={retentionRate} decimals={1} suffix="%" />
               </span>
               <span className="text-[11px] font-medium text-emerald-600 flex items-center">
                 <ArrowUpRight className="w-3 h-3" /> +2.1%
@@ -424,13 +434,11 @@ export const AdminAnalyticsView: React.FC<AdminAnalyticsViewProps> = ({ setActiv
               {activeStudentsCount} of {totalStudentsCount} active
             </p>
           </div>
-          <div className="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
-            <div className="bg-emerald-500 h-full rounded-full" style={{ width: `${retentionRate}%` }} />
-          </div>
-        </div>
+          <AnimatedProgressBar value={retentionRate} color="bg-emerald-500" height="h-1.5" />
+        </InteractiveCard>
 
         {/* Mean GPA */}
-        <div className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col justify-between space-y-3">
+        <InteractiveCard hoverY={-4} className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col justify-between space-y-3 cursor-default">
           <div className="flex items-center justify-between text-slate-500 text-xs font-semibold uppercase">
             <span>Cohort Mean GPA</span>
             <Award className="w-4 h-4 text-purple-600 dark:text-purple-400" />
@@ -438,7 +446,7 @@ export const AdminAnalyticsView: React.FC<AdminAnalyticsViewProps> = ({ setActiv
           <div>
             <div className="flex items-baseline gap-2">
               <span className="text-2xl font-bold font-mono tabular-nums text-slate-900 dark:text-white">
-                {meanGPA.toFixed(2)}
+                <AnimatedCounter value={meanGPA} decimals={2} />
               </span>
               <span className="text-[11px] font-medium text-indigo-600 dark:text-indigo-400 flex items-center">
                 <ArrowUpRight className="w-3 h-3" /> 4.0 Max
@@ -448,13 +456,11 @@ export const AdminAnalyticsView: React.FC<AdminAnalyticsViewProps> = ({ setActiv
               {honorRoll.length} students on Dean's List (≥3.5)
             </p>
           </div>
-          <div className="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
-            <div className="bg-purple-500 h-full rounded-full" style={{ width: `${(meanGPA / 4.0) * 100}%` }} />
-          </div>
-        </div>
+          <AnimatedProgressBar value={(meanGPA / 4.0) * 100} color="bg-purple-500" height="h-1.5" />
+        </InteractiveCard>
 
         {/* Institutional Attendance */}
-        <div className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col justify-between space-y-3">
+        <InteractiveCard hoverY={-4} className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col justify-between space-y-3 cursor-default">
           <div className="flex items-center justify-between text-slate-500 text-xs font-semibold uppercase">
             <span>Attendance Index</span>
             <CheckCircle2 className="w-4 h-4 text-blue-600 dark:text-blue-400" />
@@ -462,7 +468,7 @@ export const AdminAnalyticsView: React.FC<AdminAnalyticsViewProps> = ({ setActiv
           <div>
             <div className="flex items-baseline gap-2">
               <span className="text-2xl font-bold font-mono tabular-nums text-slate-900 dark:text-white">
-                {meanAttendance}%
+                <AnimatedCounter value={meanAttendance} decimals={1} suffix="%" />
               </span>
               <span className="text-[11px] font-medium text-emerald-600">
                 Target: {settings.attendanceThreshold}%
@@ -472,16 +478,15 @@ export const AdminAnalyticsView: React.FC<AdminAnalyticsViewProps> = ({ setActiv
               {meanAttendance >= settings.attendanceThreshold ? 'Meeting institutional goal' : 'Under institutional policy'}
             </p>
           </div>
-          <div className="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
-            <div 
-              className={`h-full rounded-full ${meanAttendance >= settings.attendanceThreshold ? 'bg-blue-500' : 'bg-rose-500'}`} 
-              style={{ width: `${Math.min(100, meanAttendance)}%` }} 
-            />
-          </div>
-        </div>
+          <AnimatedProgressBar 
+            value={Math.min(100, meanAttendance)} 
+            color={meanAttendance >= settings.attendanceThreshold ? 'bg-blue-500' : 'bg-rose-500'} 
+            height="h-1.5" 
+          />
+        </InteractiveCard>
 
         {/* Course Capacity */}
-        <div className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col justify-between space-y-3">
+        <InteractiveCard hoverY={-4} className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col justify-between space-y-3 cursor-default">
           <div className="flex items-center justify-between text-slate-500 text-xs font-semibold uppercase">
             <span>Seat Utilization</span>
             <BookOpen className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
@@ -489,9 +494,9 @@ export const AdminAnalyticsView: React.FC<AdminAnalyticsViewProps> = ({ setActiv
           <div>
             <div className="flex items-baseline gap-2">
               <span className="text-2xl font-bold font-mono tabular-nums text-slate-900 dark:text-white">
-                {capacityUtilization}%
+                <AnimatedCounter value={capacityUtilization} decimals={1} suffix="%" />
               </span>
-              <span className="text-[11px] text-slate-500">
+              <span className="text-[11px] text-slate-500 font-mono">
                 {totalEnrolledSeats}/{totalCapacity}
               </span>
             </div>
@@ -499,13 +504,11 @@ export const AdminAnalyticsView: React.FC<AdminAnalyticsViewProps> = ({ setActiv
               {courses.length} active course offerings
             </p>
           </div>
-          <div className="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
-            <div className="bg-indigo-500 h-full rounded-full" style={{ width: `${Math.min(100, capacityUtilization)}%` }} />
-          </div>
-        </div>
+          <AnimatedProgressBar value={Math.min(100, capacityUtilization)} color="bg-indigo-500" height="h-1.5" />
+        </InteractiveCard>
 
         {/* Risk & Early Warnings */}
-        <div className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col justify-between space-y-3">
+        <InteractiveCard hoverY={-4} className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col justify-between space-y-3 cursor-default">
           <div className="flex items-center justify-between text-slate-500 text-xs font-semibold uppercase">
             <span>Risk Indicators</span>
             <AlertTriangle className="w-4 h-4 text-rose-600 dark:text-rose-400" />
@@ -513,7 +516,7 @@ export const AdminAnalyticsView: React.FC<AdminAnalyticsViewProps> = ({ setActiv
           <div>
             <div className="flex items-baseline gap-2">
               <span className="text-2xl font-bold font-mono tabular-nums text-rose-600 dark:text-rose-400">
-                {probationStudentsCount + warningStudentsCount}
+                <AnimatedCounter value={probationStudentsCount + warningStudentsCount} />
               </span>
               <span className="text-[11px] text-slate-500">
                 {unresolvedAlertsCount} alerts open
@@ -523,15 +526,14 @@ export const AdminAnalyticsView: React.FC<AdminAnalyticsViewProps> = ({ setActiv
               {alertResolutionRate}% alert resolution rate
             </p>
           </div>
-          <div className="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
-            <div 
-              className={`h-full rounded-full ${probationStudentsCount > 0 ? 'bg-rose-500' : 'bg-emerald-500'}`} 
-              style={{ width: `${Math.min(100, (probationStudentsCount + warningStudentsCount) * 20)}%` }} 
-            />
-          </div>
-        </div>
+          <AnimatedProgressBar 
+            value={Math.min(100, (probationStudentsCount + warningStudentsCount) * 20)} 
+            color={probationStudentsCount > 0 ? 'bg-rose-500' : 'bg-emerald-500'} 
+            height="h-1.5" 
+          />
+        </InteractiveCard>
 
-      </div>
+      </StaggerContainer>
 
       {/* ======================= ANALYTICS SUB-TABS NAVIGATION ======================= */}
       <div className="flex flex-wrap items-center gap-1 border-b border-slate-200 dark:border-slate-800 pb-px">
@@ -656,12 +658,14 @@ export const AdminAnalyticsView: React.FC<AdminAnalyticsViewProps> = ({ setActiv
                         {bar.rate}%
                       </span>
 
-                      <div 
-                        className={`w-full max-w-[54px] rounded-t-lg transition-all duration-300 shadow-xs ${
-                          bar.rate >= 90 ? 'bg-indigo-600 hover:bg-indigo-700' : 'bg-amber-500 hover:bg-amber-600'
-                        } ${isHovered ? 'ring-2 ring-indigo-400 ring-offset-2 dark:ring-offset-slate-900' : ''}`}
-                        style={{ height: `${(bar.rate / 100) * 100}%` }}
-                      />
+                      <div className="w-full max-w-[54px] h-full flex flex-col justify-end">
+                        <AnimatedBarItem
+                          percentage={bar.rate}
+                          delay={i * 0.08}
+                          color={bar.rate >= 90 ? 'bg-indigo-600' : 'bg-amber-500'}
+                          hoverColor={bar.rate >= 90 ? 'hover:bg-indigo-700' : 'hover:bg-amber-600'}
+                        />
+                      </div>
 
                       <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
                         {bar.day}
@@ -716,12 +720,11 @@ export const AdminAnalyticsView: React.FC<AdminAnalyticsViewProps> = ({ setActiv
                         <span className="text-slate-400 text-[11px]">({tier.percentage}%)</span>
                       </div>
                     </div>
-                    <div className="w-full h-2.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                      <div 
-                        className={`h-full rounded-full transition-all duration-500 ${tier.color}`} 
-                        style={{ width: `${tier.percentage}%` }} 
-                      />
-                    </div>
+                    <AnimatedProgressBar
+                      value={tier.percentage}
+                      color={tier.color}
+                      height="h-2.5"
+                    />
                   </div>
                 ))}
               </div>

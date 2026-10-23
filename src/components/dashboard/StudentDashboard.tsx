@@ -5,6 +5,12 @@ import {
   GraduationCap, BookOpen, CheckCircle2, Award, Calendar, 
   AlertTriangle, Printer, Clock, FileText, ArrowRight, User 
 } from 'lucide-react';
+import { 
+  StaggerContainer, 
+  DashboardStatCard, 
+  AnimatedCircularProgress, 
+  AnimatedProgressBar 
+} from '../common/MotionComponents';
 
 export const StudentDashboard: React.FC = () => {
   const { 
@@ -78,34 +84,57 @@ export const StudentDashboard: React.FC = () => {
               </div>
             )}
 
-            {/* Academic Stat Strips */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="p-5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs">
-                <span className="text-[11px] font-semibold text-slate-500 uppercase">Cumulative GPA</span>
-                <p className="text-3xl font-bold font-mono tabular-nums text-indigo-600 dark:text-indigo-400 mt-1">
-                  {currentStudent.gpa.toFixed(2)}
-                </p>
-                <p className="text-xs text-slate-500 mt-1">4.0 Scale Standard · Standing: <strong className="capitalize">{currentStudent.status}</strong></p>
-              </div>
+            {/* Academic Stat Strips with Staggered Entrance & Numerical Counting */}
+            <StaggerContainer staggerDelay={0.08} className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <DashboardStatCard
+                title="Cumulative GPA"
+                value={currentStudent.gpa.toFixed(2)}
+                numericValue={currentStudent.gpa}
+                decimals={2}
+                icon={Award}
+                iconColor="text-indigo-600 dark:text-indigo-400"
+                subtext={
+                  <span>4.0 Standard · Standing: <strong className="capitalize text-slate-800 dark:text-slate-200">{currentStudent.status}</strong></span>
+                }
+                onClick={() => setActiveTab('grades')}
+              />
 
-              <div className="p-5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs">
-                <span className="text-[11px] font-semibold text-slate-500 uppercase">Attendance Rate</span>
-                <p className={`text-3xl font-bold font-mono tabular-nums mt-1 ${isAttendanceAtRisk ? 'text-rose-600' : 'text-emerald-600'}`}>
-                  {myAttendanceSummary.percentage}%
-                </p>
-                <p className="text-xs text-slate-500 mt-1">
-                  {myAttendanceSummary.present} Present · {myAttendanceSummary.late} Late · {myAttendanceSummary.absent} Absent
-                </p>
-              </div>
+              <DashboardStatCard
+                title="Attendance Rate"
+                value={`${myAttendanceSummary.percentage}%`}
+                numericValue={myAttendanceSummary.percentage}
+                decimals={0}
+                suffix="%"
+                icon={CheckCircle2}
+                iconColor={isAttendanceAtRisk ? 'text-rose-600' : 'text-emerald-600'}
+                subtext={
+                  <span>
+                    {myAttendanceSummary.present} Present · {myAttendanceSummary.late} Late · {myAttendanceSummary.absent} Absent
+                  </span>
+                }
+                badge={
+                  <AnimatedCircularProgress
+                    percentage={myAttendanceSummary.percentage}
+                    size={46}
+                    strokeWidth={4.5}
+                    strokeColor={isAttendanceAtRisk ? '#f43f5e' : '#10b981'}
+                    label={`${myAttendanceSummary.percentage}%`}
+                  />
+                }
+                onClick={() => setActiveTab('attendance')}
+              />
 
-              <div className="p-5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs">
-                <span className="text-[11px] font-semibold text-slate-500 uppercase">Registered Course Load</span>
-                <p className="text-3xl font-bold font-mono text-slate-900 dark:text-white mt-1">
-                  {myCourses.reduce((acc, c) => acc + c.credits, 0)} Credits
-                </p>
-                <p className="text-xs text-slate-500 mt-1">{myCourses.length} Enrolled Course Sections</p>
-              </div>
-            </div>
+              <DashboardStatCard
+                title="Registered Course Load"
+                value={`${myCourses.reduce((acc, c) => acc + c.credits, 0)} Credits`}
+                numericValue={myCourses.reduce((acc, c) => acc + c.credits, 0)}
+                suffix=" Credits"
+                icon={BookOpen}
+                iconColor="text-blue-600 dark:text-blue-400"
+                subtext={<span>{myCourses.length} Enrolled Sections</span>}
+                onClick={() => setActiveTab('courses')}
+              />
+            </StaggerContainer>
 
             {/* Enrolled Courses Preview & Upcoming Lecture */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">

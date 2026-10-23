@@ -10,6 +10,12 @@ import {
 } from 'lucide-react';
 import { Student, Course, AttendanceStatus } from '../../types';
 import { AdminAnalyticsView } from './AdminAnalyticsView';
+import { 
+  StaggerContainer, 
+  DashboardStatCard, 
+  AnimatedProgressBar, 
+  AnimatedBarItem 
+} from '../common/MotionComponents';
 
 export const AdminDashboard: React.FC = () => {
   const { 
@@ -250,61 +256,56 @@ export const AdminDashboard: React.FC = () => {
               </div>
             </div>
 
-            {/* Top Stat Strips */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="p-5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs">
-                <div className="flex items-center justify-between text-slate-500 text-xs font-semibold uppercase">
-                  <span>Enrolled Cohort</span>
-                  <Users className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
-                </div>
-                <p className="text-2xl font-bold font-mono tabular-nums text-slate-900 dark:text-white mt-2">
-                  {totalStudents}
-                </p>
-                <p className="text-[11px] text-emerald-600 mt-1 flex items-center gap-1 font-medium">
-                  <span>✓</span>
-                  <span>{students.filter(s => s.status === 'active').length} in Good Standing</span>
-                </p>
-              </div>
+            {/* Top Stat Strips with Staggered Entrance & Numerical Counting */}
+            <StaggerContainer staggerDelay={0.08} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <DashboardStatCard
+                title="Enrolled Cohort"
+                value={totalStudents}
+                numericValue={totalStudents}
+                icon={Users}
+                iconColor="text-indigo-600 dark:text-indigo-400"
+                subtext={
+                  <>
+                    <span className="text-emerald-500">✓</span>
+                    <span>{students.filter(s => s.status === 'active').length} in Good Standing</span>
+                  </>
+                }
+                onClick={() => setActiveTab('students')}
+              />
 
-              <div className="p-5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs">
-                <div className="flex items-center justify-between text-slate-500 text-xs font-semibold uppercase">
-                  <span>Active Courses</span>
-                  <BookOpen className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                </div>
-                <p className="text-2xl font-bold font-mono tabular-nums text-slate-900 dark:text-white mt-2">
-                  {activeCourses}
-                </p>
-                <p className="text-[11px] text-slate-500 mt-1">
-                  Term: {settings.academicTerm}
-                </p>
-              </div>
+              <DashboardStatCard
+                title="Active Courses"
+                value={activeCourses}
+                numericValue={activeCourses}
+                icon={BookOpen}
+                iconColor="text-blue-600 dark:text-blue-400"
+                subtext={<span>Term: {settings.academicTerm}</span>}
+                onClick={() => setActiveTab('courses')}
+              />
 
-              <div className="p-5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs">
-                <div className="flex items-center justify-between text-slate-500 text-xs font-semibold uppercase">
-                  <span>Attendance Rate</span>
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                </div>
-                <p className="text-2xl font-bold font-mono tabular-nums text-slate-900 dark:text-white mt-2">
-                  {overallAttendanceAvg}%
-                </p>
-                <p className="text-[11px] text-slate-500 mt-1">
-                  Institutional Target: ≥ {settings.attendanceThreshold}%
-                </p>
-              </div>
+              <DashboardStatCard
+                title="Attendance Rate"
+                value={`${overallAttendanceAvg}%`}
+                numericValue={overallAttendanceAvg}
+                decimals={1}
+                suffix="%"
+                icon={CheckCircle2}
+                iconColor="text-emerald-600 dark:text-emerald-400"
+                subtext={<span>Target: ≥ {settings.attendanceThreshold}%</span>}
+                onClick={() => setActiveTab('attendance')}
+              />
 
-              <div className="p-5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs">
-                <div className="flex items-center justify-between text-slate-500 text-xs font-semibold uppercase">
-                  <span>Cohort Mean GPA</span>
-                  <Award className="w-4 h-4 text-purple-600 dark:text-purple-400" />
-                </div>
-                <p className="text-2xl font-bold font-mono tabular-nums text-slate-900 dark:text-white mt-2">
-                  {meanGPA}
-                </p>
-                <p className="text-[11px] text-slate-500 mt-1">
-                  4.0 Scale Standard
-                </p>
-              </div>
-            </div>
+              <DashboardStatCard
+                title="Cohort Mean GPA"
+                value={meanGPA}
+                numericValue={parseFloat(meanGPA) || 3.45}
+                decimals={2}
+                icon={Award}
+                iconColor="text-purple-600 dark:text-purple-400"
+                subtext={<span>4.0 Scale Standard</span>}
+                onClick={() => setActiveTab('grades')}
+              />
+            </StaggerContainer>
 
             {/* Middle Row: Attendance Chart & Grade Distribution */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -326,7 +327,7 @@ export const AdminDashboard: React.FC = () => {
                     </span>
                     <button
                       onClick={() => setActiveTab('analytics')}
-                      className="text-xs text-indigo-600 dark:text-indigo-400 font-semibold hover:underline"
+                      className="text-xs text-indigo-600 dark:text-indigo-400 font-semibold hover:underline cursor-pointer"
                     >
                       Telemetry Radar →
                     </button>
@@ -345,10 +346,14 @@ export const AdminDashboard: React.FC = () => {
                       <span className="text-[10px] font-mono text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity">
                         {bar.pct}%
                       </span>
-                      <div 
-                        className="w-full max-w-[48px] rounded-t-md bg-indigo-600 dark:bg-indigo-500 group-hover:bg-indigo-700 transition-all duration-300 shadow-xs"
-                        style={{ height: `${(bar.pct / 100) * 100}%` }}
-                      />
+                      <div className="w-full max-w-[48px] h-full flex flex-col justify-end">
+                        <AnimatedBarItem
+                          percentage={bar.pct}
+                          delay={i * 0.08}
+                          color="bg-indigo-600 dark:bg-indigo-500"
+                          hoverColor="hover:bg-indigo-700 dark:hover:bg-indigo-400"
+                        />
+                      </div>
                       <span className="text-xs font-semibold text-slate-600 dark:text-slate-400">
                         {bar.day}
                       </span>
@@ -373,16 +378,18 @@ export const AdminDashboard: React.FC = () => {
                     { grade: 'A (90–100%)', count: 4, pct: 45, color: 'bg-emerald-500' },
                     { grade: 'B (80–89%)', count: 3, pct: 30, color: 'bg-indigo-500' },
                     { grade: 'C (70–79%)', count: 1, pct: 15, color: 'bg-amber-500' },
-                    { grade: 'D/F (&lt;70%)', count: 2, pct: 10, color: 'bg-rose-500' },
+                    { grade: 'D/F (<70%)', count: 2, pct: 10, color: 'bg-rose-500' },
                   ].map((item, idx) => (
                     <div key={idx} className="space-y-1">
                       <div className="flex items-center justify-between text-xs">
                         <span className="font-medium text-slate-700 dark:text-slate-300">{item.grade}</span>
                         <span className="font-mono text-slate-500">{item.count} students</span>
                       </div>
-                      <div className="w-full h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                        <div className={`h-full rounded-full ${item.color}`} style={{ width: `${item.pct}%` }} />
-                      </div>
+                      <AnimatedProgressBar
+                        value={item.pct}
+                        color={item.color}
+                        className="shadow-xs"
+                      />
                     </div>
                   ))}
                 </div>

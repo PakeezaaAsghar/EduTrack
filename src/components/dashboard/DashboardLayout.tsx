@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { useEduTrack } from '../../context/EduTrackContext';
 import { EduTrackLogo } from '../common/EduTrackLogo';
 import { UserProfileView } from './UserProfileView';
@@ -7,7 +8,7 @@ import {
   CheckCircle2, Award, Calendar, AlertTriangle, FileText, 
   Settings, LogOut, Bell, Search, Menu, X, 
   ChevronRight, ArrowLeft, History, Shield, Check,
-  UserCircle, Edit3, BarChart3
+  UserCircle, Edit3, BarChart3, Sun, Moon, Calculator
 } from 'lucide-react';
 
 interface DashboardLayoutProps {
@@ -26,7 +27,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   const { 
     currentUser, logout, 
     navigate, notifications, markNotificationRead, markAllNotificationsRead,
-    alerts
+    alerts, darkMode, toggleDarkMode
   } = useEduTrack();
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -209,6 +210,27 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                 );
               })}
             </nav>
+
+            {/* Academic Suite Shortcuts */}
+            <div className="pt-4 border-t border-slate-800 space-y-1">
+              <span className="px-3 text-[10px] font-mono uppercase tracking-wider text-slate-500 font-bold block">
+                Academic Suite
+              </span>
+              <button
+                onClick={() => navigate('/timetable')}
+                className="w-full flex items-center gap-2.5 px-3 py-1.5 text-xs text-slate-400 hover:text-white hover:bg-slate-800/50 rounded-lg transition-colors cursor-pointer text-left"
+              >
+                <Calendar className="w-3.5 h-3.5 text-indigo-400" />
+                <span>Timetable Radar</span>
+              </button>
+              <button
+                onClick={() => navigate('/planner')}
+                className="w-full flex items-center gap-2.5 px-3 py-1.5 text-xs text-slate-400 hover:text-white hover:bg-slate-800/50 rounded-lg transition-colors cursor-pointer text-left"
+              >
+                <Calculator className="w-3.5 h-3.5 text-purple-400" />
+                <span>GPA Target Planner</span>
+              </button>
+            </div>
           </div>
 
           {/* Bottom Actions */}
@@ -216,7 +238,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
             <div className="flex items-center justify-between text-slate-400">
               <button
                 onClick={() => navigate('/')}
-                className="flex items-center gap-1.5 hover:text-white transition-colors"
+                className="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer"
               >
                 <ArrowLeft className="w-3.5 h-3.5" />
                 <span>Public Site</span>
@@ -224,7 +246,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
 
               <button
                 onClick={logout}
-                className="flex items-center gap-1.5 text-rose-400 hover:text-rose-300 transition-colors"
+                className="flex items-center gap-1.5 text-rose-400 hover:text-rose-300 transition-colors cursor-pointer"
                 title="Sign out"
               >
                 <LogOut className="w-3.5 h-3.5" />
@@ -253,13 +275,27 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
           </div>
 
           {/* Right Header Affordances */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
+
+            {/* Dark / Light Mode Switcher */}
+            <button
+              onClick={toggleDarkMode}
+              className="p-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+              title={darkMode ? 'Switch to Light Theme' : 'Switch to Dark Theme'}
+              aria-label="Toggle theme mode"
+            >
+              {darkMode ? (
+                <Sun className="w-4 h-4 text-amber-400" />
+              ) : (
+                <Moon className="w-4 h-4 text-slate-600 dark:text-slate-400" />
+              )}
+            </button>
 
             {/* Notification Center */}
             <div className="relative">
               <button
                 onClick={() => setNotifDropdownOpen(!notifDropdownOpen)}
-                className="p-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors relative"
+                className="p-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors relative cursor-pointer"
                 aria-label="Notifications"
               >
                 <Bell className="w-4 h-4" />
@@ -268,50 +304,56 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                 )}
               </button>
 
-              {/* Notification Dropdown */}
-              {notifDropdownOpen && (
-                <div 
-                  className="absolute right-0 mt-2 w-80 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-lg p-3 z-50 animate-in fade-in zoom-in-95"
-                  onMouseLeave={() => setNotifDropdownOpen(false)}
-                >
-                  <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-800">
-                    <span className="text-xs font-bold text-slate-900 dark:text-white">Academic Notifications</span>
-                    {unreadNotifs.length > 0 && (
-                      <button
-                        onClick={markAllNotificationsRead}
-                        className="text-[11px] text-indigo-600 dark:text-indigo-400 hover:underline"
-                      >
-                        Mark all as read
-                      </button>
-                    )}
-                  </div>
-                  <div className="max-h-72 overflow-y-auto space-y-2 pt-2">
-                    {notifications.length === 0 ? (
-                      <p className="text-xs text-slate-400 text-center py-4">No notifications present</p>
-                    ) : (
-                      notifications.slice(0, 5).map((n) => (
-                        <div
-                          key={n.id}
-                          onClick={() => markNotificationRead(n.id)}
-                          className={`p-2.5 rounded-lg border text-xs cursor-pointer transition-colors ${
-                            n.read 
-                              ? 'bg-slate-50 dark:bg-slate-800/40 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400' 
-                              : 'bg-indigo-50/50 dark:bg-indigo-950/40 border-indigo-200 dark:border-indigo-900 text-slate-900 dark:text-white font-medium'
-                          }`}
+              {/* Notification Dropdown with Smooth Animation */}
+              <AnimatePresence>
+                {notifDropdownOpen && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: -6, scale: 0.98 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -6, scale: 0.98 }}
+                    transition={{ duration: 0.18, ease: 'easeOut' }}
+                    className="absolute right-0 mt-2 w-80 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-lg p-3 z-50"
+                    onMouseLeave={() => setNotifDropdownOpen(false)}
+                  >
+                    <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-800">
+                      <span className="text-xs font-bold text-slate-900 dark:text-white">Academic Notifications</span>
+                      {unreadNotifs.length > 0 && (
+                        <button
+                          onClick={markAllNotificationsRead}
+                          className="text-[11px] text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer"
                         >
-                          <div className="flex items-center justify-between">
-                            <span className="font-semibold text-xs">{n.title}</span>
-                            <span className="text-[10px] text-slate-400">{n.timestamp}</span>
+                          Mark all as read
+                        </button>
+                      )}
+                    </div>
+                    <div className="max-h-72 overflow-y-auto space-y-2 pt-2">
+                      {notifications.length === 0 ? (
+                        <p className="text-xs text-slate-400 text-center py-4">No notifications present</p>
+                      ) : (
+                        notifications.slice(0, 5).map((n) => (
+                          <div
+                            key={n.id}
+                            onClick={() => markNotificationRead(n.id)}
+                            className={`p-2.5 rounded-lg border text-xs cursor-pointer transition-colors ${
+                              n.read 
+                                ? 'bg-slate-50 dark:bg-slate-800/40 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400' 
+                                : 'bg-indigo-50/50 dark:bg-indigo-950/40 border-indigo-200 dark:border-indigo-900 text-slate-900 dark:text-white font-medium'
+                            }`}
+                          >
+                            <div className="flex items-center justify-between">
+                              <span className="font-semibold text-xs">{n.title}</span>
+                              <span className="text-[10px] text-slate-400 font-mono">{n.timestamp}</span>
+                            </div>
+                            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 leading-snug">
+                              {n.message}
+                            </p>
                           </div>
-                          <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 leading-snug">
-                            {n.message}
-                          </p>
-                        </div>
-                      ))
-                    )}
-                  </div>
-                </div>
-              )}
+                        ))
+                      )}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             {/* User Profile Mini Tab with Quick Profile Link */}
@@ -319,7 +361,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
               <button
                 type="button"
                 onClick={() => setActiveTab('profile')}
-                className="flex items-center gap-2 p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-left transition-colors group focus:outline-none"
+                className="flex items-center gap-2 p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-left transition-colors group focus:outline-none cursor-pointer"
                 title="View & Edit My Profile"
               >
                 <div className="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-bold text-white uppercase shrink-0 overflow-hidden ring-1 ring-slate-300 dark:ring-slate-700 group-hover:ring-indigo-500 transition-all">
@@ -342,7 +384,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
 
               <button
                 onClick={logout}
-                className="p-1.5 text-slate-400 hover:text-rose-600 rounded-md transition-colors"
+                className="p-1.5 text-slate-400 hover:text-rose-600 rounded-md transition-colors cursor-pointer"
                 title="Sign out"
               >
                 <LogOut className="w-4 h-4" />
@@ -351,13 +393,20 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
           </div>
         </header>
 
-        {/* Content Viewport */}
+        {/* Content Viewport with Gentle Fade & Slide Reveal */}
         <main className="p-4 sm:p-6 lg:p-8 flex-1">
-          {activeTab === 'profile' ? (
-            <UserProfileView onBackToOverview={() => setActiveTab('overview')} />
-          ) : (
-            children
-          )}
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+          >
+            {activeTab === 'profile' ? (
+              <UserProfileView onBackToOverview={() => setActiveTab('overview')} />
+            ) : (
+              children
+            )}
+          </motion.div>
         </main>
 
       </div>

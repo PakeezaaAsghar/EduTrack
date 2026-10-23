@@ -126,20 +126,33 @@ export const EduTrackProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   // Dark Mode
   const [darkMode, setDarkMode] = useState<boolean>(() => {
-    const saved = localStorage.getItem('edutrack_dark_mode');
-    return saved ? JSON.parse(saved) : false;
+    try {
+      const saved = localStorage.getItem('edutrack_dark_mode');
+      if (saved !== null) {
+        return JSON.parse(saved);
+      }
+      return typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    } catch {
+      return false;
+    }
   });
 
   useEffect(() => {
     if (darkMode) {
       document.documentElement.classList.add('dark');
+      document.body.classList.add('dark');
     } else {
       document.documentElement.classList.remove('dark');
+      document.body.classList.remove('dark');
     }
-    localStorage.setItem('edutrack_dark_mode', JSON.stringify(darkMode));
+    try {
+      localStorage.setItem('edutrack_dark_mode', JSON.stringify(darkMode));
+    } catch {
+      // ignore
+    }
   }, [darkMode]);
 
-  const toggleDarkMode = () => setDarkMode(!darkMode);
+  const toggleDarkMode = () => setDarkMode(prev => !prev);
 
   // Settings
   const [settings, setSettings] = useState<SystemSettings>(() => {

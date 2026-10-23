@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { useEduTrack } from '../../context/EduTrackContext';
 import { EduTrackLogo } from '../common/EduTrackLogo';
 import { 
-  Menu, X, 
-  ArrowRight, LogOut, Lock, User as UserIcon, Shield, BookOpen
+  Menu, X, ArrowRight, LogOut, Lock, 
+  Sun, Moon, Search, Calendar, Calculator
 } from 'lucide-react';
 
-export const Navbar: React.FC = () => {
-  const { currentUser, logout, currentPath, navigate } = useEduTrack();
+interface NavbarProps {
+  onOpenSearch?: () => void;
+}
+
+export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
+  const { currentUser, logout, currentPath, navigate, darkMode, toggleDarkMode } = useEduTrack();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -21,11 +26,13 @@ export const Navbar: React.FC = () => {
 
   const navLinks = [
     { label: 'Home', path: '/' },
-    { label: 'About', path: '/about' },
+    { label: 'Timetable', path: '/timetable' },
+    { label: 'Planner', path: '/planner' },
     { label: 'Features', path: '/features' },
     { label: 'How It Works', path: '/how-it-works' },
-    { label: 'Contact', path: '/contact' },
+    { label: 'About', path: '/about' },
     { label: 'FAQ', path: '/faq' },
+    { label: 'Contact', path: '/contact' },
   ];
 
   const handleNavClick = (path: string) => {
@@ -49,26 +56,26 @@ export const Navbar: React.FC = () => {
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-18 gap-6">
+        <div className="flex items-center justify-between h-18 gap-4 sm:gap-6">
           
           {/* Zone 1: Brand Wordmark */}
           <button 
             onClick={() => handleNavClick('/')}
-            className="flex items-center text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded-lg shrink-0"
+            className="flex items-center text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded-lg shrink-0 cursor-pointer"
             aria-label="EduTrack Home"
           >
             <EduTrackLogo size="md" />
           </button>
 
           {/* Zone 2: Navigation Links */}
-          <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600 dark:text-slate-300">
+          <nav className="hidden lg:flex items-center gap-5 text-sm font-medium text-slate-600 dark:text-slate-300">
             {navLinks.map((link) => {
               const isActive = currentPath === link.path;
               return (
                 <button
                   key={link.path}
                   onClick={() => handleNavClick(link.path)}
-                  className={`relative py-1.5 transition-colors whitespace-nowrap shrink-0 ${
+                  className={`relative py-1.5 transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
                     isActive 
                       ? 'text-indigo-600 dark:text-indigo-400 font-semibold' 
                       : 'hover:text-slate-900 dark:hover:text-white'
@@ -83,11 +90,26 @@ export const Navbar: React.FC = () => {
             })}
           </nav>
 
-          {/* Zone 3: Actions (Auth / Dashboard) */}
-          <div className="hidden sm:flex items-center gap-3 shrink-0">
+          {/* Zone 3: Actions (Theme Toggle, Auth / Dashboard) */}
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+
+            {/* Theme Toggle Button */}
+            <button
+              type="button"
+              onClick={toggleDarkMode}
+              className="p-2 rounded-xl text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-90 border border-slate-200/50 dark:border-slate-700/50 hover:border-slate-300 dark:hover:border-slate-600 transition-all duration-200 cursor-pointer shadow-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+              title={darkMode ? 'Switch to Light Theme' : 'Switch to Dark Theme'}
+              aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+            >
+              {darkMode ? (
+                <Sun className="w-4 h-4 text-amber-400 transition-transform duration-300 rotate-0 hover:rotate-90 hover:scale-110" />
+              ) : (
+                <Moon className="w-4 h-4 text-slate-600 dark:text-slate-300 transition-transform duration-300 rotate-0 hover:-rotate-45 hover:scale-110" />
+              )}
+            </button>
 
             {currentUser ? (
-              <div className="flex items-center gap-2.5 pl-1 border-l border-slate-200 dark:border-slate-800">
+              <div className="hidden sm:flex items-center gap-2.5 pl-1 border-l border-slate-200 dark:border-slate-800">
                 <div className="flex items-center gap-2 text-left pr-1">
                   <div className="w-7 h-7 rounded-full bg-slate-800 border border-slate-700 text-white flex items-center justify-center text-xs font-bold uppercase overflow-hidden shrink-0">
                     {currentUser.avatar ? (
@@ -96,7 +118,7 @@ export const Navbar: React.FC = () => {
                       <span>{currentUser.name.slice(0, 2)}</span>
                     )}
                   </div>
-                  <div className="hidden lg:block leading-tight">
+                  <div className="hidden xl:block leading-tight">
                     <p className="text-xs font-semibold text-slate-900 dark:text-white truncate max-w-[110px]">
                       {currentUser.name}
                     </p>
@@ -108,7 +130,7 @@ export const Navbar: React.FC = () => {
 
                 <button
                   onClick={() => handleNavClick(getDashboardPath())}
-                  className="px-3 py-1.5 text-xs font-semibold text-white bg-slate-900 dark:bg-indigo-600 hover:bg-slate-800 dark:hover:bg-indigo-500 rounded-lg transition-colors flex items-center gap-1.5 whitespace-nowrap shadow-xs"
+                  className="px-3 py-1.5 text-xs font-semibold text-white bg-slate-900 dark:bg-indigo-600 hover:bg-slate-800 dark:hover:bg-indigo-500 rounded-lg transition-colors flex items-center gap-1.5 whitespace-nowrap shadow-xs cursor-pointer"
                 >
                   <span>My Portal</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -116,112 +138,128 @@ export const Navbar: React.FC = () => {
 
                 <button
                   onClick={logout}
-                  className="p-1.5 text-slate-400 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                  className="p-1.5 text-slate-400 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                   title="Sign Out"
                 >
                   <LogOut className="w-4 h-4" />
                 </button>
               </div>
             ) : (
-              <div className="flex items-center gap-2.5">
+              <div className="hidden sm:flex items-center gap-2">
                 <button
                   onClick={() => handleNavClick('/signin')}
-                  className="px-3.5 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white rounded-lg transition-colors whitespace-nowrap"
+                  className="px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white rounded-lg transition-colors whitespace-nowrap cursor-pointer"
                 >
                   Sign In
                 </button>
                 <button
                   onClick={() => handleNavClick('/signup')}
-                  className="px-4 py-2 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-600 dark:hover:bg-indigo-500 rounded-lg transition-colors whitespace-nowrap shadow-xs flex items-center gap-1.5"
+                  className="px-3.5 py-1.5 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-600 dark:hover:bg-indigo-500 rounded-lg transition-colors whitespace-nowrap shadow-xs flex items-center gap-1.5 cursor-pointer"
                 >
                   <span>Get Started</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
             )}
-          </div>
 
-          {/* Mobile menu button */}
-          <div className="flex md:hidden items-center gap-2">
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white rounded-lg"
-              aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
-            >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
+            {/* Mobile menu button */}
+            <div className="flex lg:hidden items-center gap-1.5">
+              <button
+                onClick={onOpenSearch}
+                className="p-2 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white rounded-lg cursor-pointer"
+                aria-label="Search"
+              >
+                <Search className="w-5 h-5" />
+              </button>
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="p-2 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white rounded-lg cursor-pointer"
+                aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+              >
+                {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              </button>
+            </div>
+
           </div>
 
         </div>
       </div>
 
-      {/* Mobile Drawer */}
-      {mobileMenuOpen && (
-        <div className="md:hidden border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 pt-3 pb-6 space-y-3">
-          <nav className="flex flex-col space-y-1">
-            {navLinks.map((link) => (
-              <button
-                key={link.path}
-                onClick={() => handleNavClick(link.path)}
-                className={`text-left px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-                  currentPath === link.path
-                    ? 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 font-semibold'
-                    : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
-                }`}
-              >
-                {link.label}
-              </button>
-            ))}
-          </nav>
+      {/* Mobile Drawer with Smooth Accordion Motion */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div 
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+            className="lg:hidden border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 pt-3 pb-6 space-y-3 overflow-hidden"
+          >
+            <nav className="flex flex-col space-y-1">
+              {navLinks.map((link) => (
+                <button
+                  key={link.path}
+                  onClick={() => handleNavClick(link.path)}
+                  className={`text-left px-3 py-2 text-sm font-medium rounded-lg transition-colors cursor-pointer ${
+                    currentPath === link.path
+                      ? 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 font-semibold'
+                      : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
+                  }`}
+                >
+                  {link.label}
+                </button>
+              ))}
+            </nav>
 
-          <div className="pt-3 border-t border-slate-200 dark:border-slate-800 flex flex-col gap-2">
-            {currentUser ? (
-              <>
-                <div className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800 flex items-center justify-between text-xs">
-                  <div>
-                    <p className="font-semibold text-slate-900 dark:text-white">{currentUser.name}</p>
-                    <p className="text-[10px] text-indigo-600 dark:text-indigo-400 uppercase font-mono">{currentUser.role} Portal</p>
+            <div className="pt-3 border-t border-slate-200 dark:border-slate-800 flex flex-col gap-2">
+              {currentUser ? (
+                <>
+                  <div className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800 flex items-center justify-between text-xs">
+                    <div>
+                      <p className="font-semibold text-slate-900 dark:text-white">{currentUser.name}</p>
+                      <p className="text-[10px] text-indigo-600 dark:text-indigo-400 uppercase font-mono">{currentUser.role} Portal</p>
+                    </div>
+                    <button
+                      onClick={() => { logout(); setMobileMenuOpen(false); }}
+                      className="text-xs text-rose-600 font-medium hover:underline cursor-pointer"
+                    >
+                      Sign Out
+                    </button>
                   </div>
                   <button
-                    onClick={() => { logout(); setMobileMenuOpen(false); }}
-                    className="text-xs text-rose-600 font-medium hover:underline"
+                    onClick={() => handleNavClick(getDashboardPath())}
+                    className="w-full py-2.5 text-center text-xs font-semibold text-white bg-slate-900 dark:bg-indigo-600 rounded-lg flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
                   >
-                    Sign Out
+                    <span>Open {currentUser.role} Portal</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
                   </button>
+                </>
+              ) : (
+                <div className="space-y-2 pt-1">
+                  <div className="p-2.5 rounded-lg bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900 text-[11px] text-amber-800 dark:text-amber-300 flex items-center gap-2">
+                    <Lock className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                    <span>Portal access requires signing in or registering.</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      onClick={() => handleNavClick('/signin')}
+                      className="py-2.5 text-center text-xs font-semibold border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                    >
+                      Sign In
+                    </button>
+                    <button
+                      onClick={() => handleNavClick('/signup')}
+                      className="py-2.5 text-center text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg transition-colors shadow-xs cursor-pointer"
+                    >
+                      Get Started
+                    </button>
+                  </div>
                 </div>
-                <button
-                  onClick={() => handleNavClick(getDashboardPath())}
-                  className="w-full py-2.5 text-center text-xs font-semibold text-white bg-slate-900 dark:bg-indigo-600 rounded-lg flex items-center justify-center gap-1.5"
-                >
-                  <span>Open {currentUser.role} Portal</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              </>
-            ) : (
-              <div className="space-y-2 pt-1">
-                <div className="p-2.5 rounded-lg bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900 text-[11px] text-amber-800 dark:text-amber-300 flex items-center gap-2">
-                  <Lock className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-                  <span>Portal access requires signing in or registering.</span>
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  <button
-                    onClick={() => handleNavClick('/signin')}
-                    className="py-2.5 text-center text-xs font-semibold border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 rounded-lg"
-                  >
-                    Sign In
-                  </button>
-                  <button
-                    onClick={() => handleNavClick('/signup')}
-                    className="py-2.5 text-center text-xs font-semibold text-white bg-indigo-600 rounded-lg"
-                  >
-                    Get Started
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 };

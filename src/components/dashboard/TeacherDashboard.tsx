@@ -5,6 +5,11 @@ import {
   BookOpen, Users, CheckCircle2, Award, Calendar, 
   AlertTriangle, Plus, Check, Trash2, Clock, UserCircle
 } from 'lucide-react';
+import { 
+  StaggerContainer, 
+  DashboardStatCard, 
+  InteractiveCard 
+} from '../common/MotionComponents';
 import { AttendanceStatus } from '../../types';
 
 export const TeacherDashboard: React.FC = () => {
@@ -128,34 +133,42 @@ export const TeacherDashboard: React.FC = () => {
               </div>
             </div>
 
-            {/* Quick Metrics */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs">
-                <span className="text-[11px] font-semibold text-slate-500 uppercase">Teaching Load</span>
-                <p className="text-2xl font-bold font-mono text-slate-900 dark:text-white mt-1">
-                  {myCourses.reduce((acc, c) => acc + c.credits, 0)} Credit Hours
-                </p>
-                <p className="text-xs text-slate-500 mt-0.5">{myCourses.length} Assigned Courses</p>
-              </div>
+            {/* Quick Metrics with Staggered Entrance & Lift */}
+            <StaggerContainer staggerDelay={0.08} className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <DashboardStatCard
+                title="Teaching Load"
+                value={`${myCourses.reduce((acc, c) => acc + c.credits, 0)} Credits`}
+                numericValue={myCourses.reduce((acc, c) => acc + c.credits, 0)}
+                suffix=" Credit Hours"
+                icon={BookOpen}
+                iconColor="text-indigo-600 dark:text-indigo-400"
+                subtext={<span>{myCourses.length} Assigned Sections</span>}
+                onClick={() => setActiveTab('my-courses')}
+              />
 
-              <div className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs">
-                <span className="text-[11px] font-semibold text-slate-500 uppercase">Active Students</span>
-                <p className="text-2xl font-bold font-mono text-slate-900 dark:text-white mt-1">
-                  {students.filter(s => s.enrolledCourses.some(cId => myCourses.some(mc => mc.id === cId))).length}
-                </p>
-                <p className="text-xs text-emerald-600 mt-0.5">Enrolled across your sections</p>
-              </div>
+              <DashboardStatCard
+                title="Active Students"
+                value={students.filter(s => s.enrolledCourses.some(cId => myCourses.some(mc => mc.id === cId))).length}
+                numericValue={students.filter(s => s.enrolledCourses.some(cId => myCourses.some(mc => mc.id === cId))).length}
+                icon={Users}
+                iconColor="text-emerald-600 dark:text-emerald-400"
+                subtext={<span className="text-emerald-600">Enrolled across your sections</span>}
+                onClick={() => setActiveTab('attendance')}
+              />
 
-              <div className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs">
-                <span className="text-[11px] font-semibold text-slate-500 uppercase">Upcoming Lecture</span>
-                <p className="text-sm font-bold text-slate-900 dark:text-white mt-1 truncate">
-                  {mySchedule[0]?.courseCode || 'CS-201'}: {mySchedule[0]?.title || 'Algorithms'}
-                </p>
-                <p className="text-xs text-indigo-600 dark:text-indigo-400 mt-0.5 font-mono">
-                  {mySchedule[0]?.day} {mySchedule[0]?.startTime} · {mySchedule[0]?.room}
-                </p>
-              </div>
-            </div>
+              <DashboardStatCard
+                title="Upcoming Lecture"
+                value={mySchedule[0]?.courseCode || 'CS-201'}
+                icon={Calendar}
+                iconColor="text-blue-600 dark:text-blue-400"
+                subtext={
+                  <span className="font-mono text-indigo-600 dark:text-indigo-400 truncate">
+                    {mySchedule[0]?.day} {mySchedule[0]?.startTime} · {mySchedule[0]?.room}
+                  </span>
+                }
+                onClick={() => setActiveTab('schedule')}
+              />
+            </StaggerContainer>
 
             {/* Assigned Courses Cards */}
             <div className="space-y-3">

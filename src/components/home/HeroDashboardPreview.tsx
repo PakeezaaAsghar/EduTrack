@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { 
   Users, BookOpen, CheckCircle2, TrendingUp, 
   Calendar, Bell, Search, LayoutDashboard, FileText, 
@@ -32,10 +33,15 @@ export const HeroDashboardPreview: React.FC = () => {
   ];
 
   return (
-    <div className="relative mx-auto w-full max-w-2xl group">
-      
+    <motion.div 
+      initial={{ opacity: 0, scale: 0.97, y: 18 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+      whileHover={{ y: -4, transition: { duration: 0.3 } }}
+      className="relative mx-auto w-full max-w-2xl group"
+    >
       {/* Ambient background glow with Holst colors */}
-      <div className="absolute -inset-1.5 bg-gradient-to-r from-[#415A77]/30 via-[#778D7A]/20 to-[#D4C4A8]/20 rounded-3xl blur-xl opacity-75 group-hover:opacity-100 transition duration-500" />
+      <div className="absolute -inset-1.5 bg-gradient-to-r from-[#415A77]/30 via-[#778D7A]/20 to-[#D4C4A8]/20 rounded-3xl blur-xl opacity-75 group-hover:opacity-100 transition duration-500 pointer-events-none" />
 
       {/* Main Browser Window Frame */}
       <div className="relative rounded-2xl bg-[#0D1B2A] text-[#F4F1DE] overflow-hidden border border-[#D4C4A8]/40 shadow-2xl transition-all duration-300">
@@ -208,7 +214,13 @@ export const HeroDashboardPreview: React.FC = () => {
 
               {/* Tab 1: Attendance Dynamic Bars */}
               {activeTab === 'attendance' && (
-                <div className="space-y-2">
+                <motion.div 
+                  key="attendance"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.3 }}
+                  className="space-y-2"
+                >
                   <div className="h-20 w-full flex items-end gap-2 pt-2 relative">
                     {/* 75% Threshold Line */}
                     <div className="absolute left-0 right-0 top-[25%] border-b border-dashed border-[#D4C4A8]/50 pointer-events-none flex items-center justify-end pr-1">
@@ -222,15 +234,20 @@ export const HeroDashboardPreview: React.FC = () => {
                         onMouseEnter={() => setHoveredBarIndex(i)}
                         onMouseLeave={() => setHoveredBarIndex(null)}
                       >
-                        <div 
-                          className="w-full rounded-t-sm transition-all duration-300 bg-[#415A77] group-hover:bg-[#D4C4A8] relative"
-                          style={{ height: `${bar.rate}%` }}
-                        >
-                          {hoveredBarIndex === i && (
-                            <div className="absolute -top-7 left-1/2 -translate-x-1/2 bg-[#0D1B2A] px-1.5 py-0.5 rounded border border-[#D4C4A8] text-[9px] text-[#D4C4A8] whitespace-nowrap z-10 shadow-lg font-mono">
-                              {bar.rate}% ({bar.present} P)
-                            </div>
-                          )}
+                        <div className="w-full h-full flex flex-col justify-end">
+                          <motion.div 
+                            className="w-full rounded-t-sm transition-colors duration-200 bg-[#415A77] group-hover:bg-[#D4C4A8] relative origin-bottom"
+                            initial={{ scaleY: 0 }}
+                            animate={{ scaleY: 1 }}
+                            transition={{ duration: 0.55, delay: i * 0.06, ease: [0.16, 1, 0.3, 1] }}
+                            style={{ height: `${bar.rate}%` }}
+                          >
+                            {hoveredBarIndex === i && (
+                              <div className="absolute -top-7 left-1/2 -translate-x-1/2 bg-[#0D1B2A] px-1.5 py-0.5 rounded border border-[#D4C4A8] text-[9px] text-[#D4C4A8] whitespace-nowrap z-10 shadow-lg font-mono">
+                                {bar.rate}% ({bar.present} P)
+                              </div>
+                            )}
+                          </motion.div>
                         </div>
                         <span className="text-[9px] text-[#D4C4A8]/80 font-mono group-hover:text-white transition-colors">{bar.day}</span>
                       </div>
@@ -240,20 +257,28 @@ export const HeroDashboardPreview: React.FC = () => {
                     <span>Average Daily Rate: <strong className="text-white">93.5%</strong></span>
                     <span className="text-[#778D7A] font-medium">All departments meeting target</span>
                   </div>
-                </div>
+                </motion.div>
               )}
 
               {/* Tab 2: Grade Distribution */}
               {activeTab === 'grades' && (
-                <div className="space-y-2 pt-1">
+                <motion.div 
+                  key="grades"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.3 }}
+                  className="space-y-2 pt-1"
+                >
                   <div className="space-y-1.5">
                     {gradeDistribution.map((item, i) => (
                       <div key={i} className="flex items-center gap-2 text-[10px]">
                         <span className="w-7 font-mono font-bold text-[#D4C4A8]">{item.grade}</span>
                         <div className="flex-1 h-3 bg-[#0D1B2A] rounded-full overflow-hidden p-0.5">
-                          <div 
-                            className={`h-full rounded-full ${item.color} transition-all duration-500`}
-                            style={{ width: `${item.percent}%` }}
+                          <motion.div 
+                            className={`h-full rounded-full ${item.color}`}
+                            initial={{ width: 0 }}
+                            animate={{ width: `${item.percent}%` }}
+                            transition={{ duration: 0.65, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
                           />
                         </div>
                         <span className="w-10 text-right font-mono text-[#F4F1DE]">{item.percent}%</span>
@@ -265,14 +290,26 @@ export const HeroDashboardPreview: React.FC = () => {
                     <span>Grading Policy: <strong className="text-white">4.0 Scale Standard</strong></span>
                     <span className="text-[#D4C4A8]">Weighted Assessment Engine</span>
                   </div>
-                </div>
+                </motion.div>
               )}
 
               {/* Tab 3: Timetable Collision Radar */}
               {activeTab === 'conflicts' && (
-                <div className="space-y-1.5 pt-1">
+                <motion.div 
+                  key="conflicts"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.3 }}
+                  className="space-y-1.5 pt-1"
+                >
                   {timetablePreview.map((item, idx) => (
-                    <div key={idx} className="p-1.5 rounded-lg bg-[#0D1B2A] border border-[#415A77]/40 flex items-center justify-between text-[10px]">
+                    <motion.div 
+                      key={idx} 
+                      initial={{ opacity: 0, x: -8 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.35, delay: idx * 0.07, ease: [0.16, 1, 0.3, 1] }}
+                      className="p-1.5 rounded-lg bg-[#0D1B2A] border border-[#415A77]/40 flex items-center justify-between text-[10px] hover:border-[#D4C4A8]/50 transition-colors"
+                    >
                       <div className="flex items-center gap-2">
                         <span className="font-mono text-[#D4C4A8] font-semibold">{item.time}</span>
                         <span className="font-bold text-[#F4F1DE]">{item.code}</span>
@@ -285,7 +322,7 @@ export const HeroDashboardPreview: React.FC = () => {
                           <span>{item.status}</span>
                         </span>
                       </div>
-                    </div>
+                    </motion.div>
                   ))}
                   <div className="flex items-center justify-between text-[10px] text-[#778D7A] pt-1 border-t border-[#415A77]/40">
                     <span className="flex items-center gap-1 font-medium">
@@ -294,7 +331,7 @@ export const HeroDashboardPreview: React.FC = () => {
                     </span>
                     <span className="font-mono text-[#D4C4A8]">100% Collision-Free</span>
                   </div>
-                </div>
+                </motion.div>
               )}
 
             </div>
@@ -327,6 +364,6 @@ export const HeroDashboardPreview: React.FC = () => {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };

@@ -10,11 +10,15 @@ import { ContactPage } from './pages/ContactPage';
 import { FaqPage } from './pages/FaqPage';
 import { PrivacyPage } from './pages/PrivacyPage';
 import { TermsPage } from './pages/TermsPage';
+import { TimetablePage } from './pages/TimetablePage';
+import { PlannerPage } from './pages/PlannerPage';
 import { SignInPage, SignUpPage, ForgotPasswordPage } from './pages/AuthPages';
 import { AdminDashboard } from './components/dashboard/AdminDashboard';
 import { TeacherDashboard } from './components/dashboard/TeacherDashboard';
 import { StudentDashboard } from './components/dashboard/StudentDashboard';
+import { CommandPaletteModal } from './components/common/CommandPaletteModal';
 import { Lock, ShieldAlert, ArrowRight, UserPlus, LogIn, AlertCircle } from 'lucide-react';
+import { motion } from 'motion/react';
 
 const AuthGateCard: React.FC<{
   portalName: string;
@@ -134,6 +138,11 @@ const UnauthorizedRoleCard: React.FC<{
 
 const AppContent: React.FC = () => {
   const { currentPath, currentUser, navigate } = useEduTrack();
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = React.useState(false);
+
+  const renderNavbar = () => (
+    <Navbar onOpenSearch={() => setIsCommandPaletteOpen(true)} />
+  );
 
   // Route router logic
   const renderView = () => {
@@ -142,7 +151,7 @@ const AppContent: React.FC = () => {
       if (!currentUser) {
         return (
           <>
-            <Navbar />
+            {renderNavbar()}
             <AuthGateCard
               portalName="Administrator Console"
               roleHint="Admin Portal"
@@ -156,7 +165,7 @@ const AppContent: React.FC = () => {
       if (currentUser.role !== 'admin') {
         return (
           <>
-            <Navbar />
+            {renderNavbar()}
             <UnauthorizedRoleCard
               requiredRole="Administrator"
               currentRole={currentUser.role}
@@ -174,7 +183,7 @@ const AppContent: React.FC = () => {
       if (!currentUser) {
         return (
           <>
-            <Navbar />
+            {renderNavbar()}
             <AuthGateCard
               portalName="Faculty & Instructor Desk"
               roleHint="Faculty Portal"
@@ -188,7 +197,7 @@ const AppContent: React.FC = () => {
       if (currentUser.role !== 'teacher' && currentUser.role !== 'admin') {
         return (
           <>
-            <Navbar />
+            {renderNavbar()}
             <UnauthorizedRoleCard
               requiredRole="Faculty Instructor"
               currentRole={currentUser.role}
@@ -206,7 +215,7 @@ const AppContent: React.FC = () => {
       if (!currentUser) {
         return (
           <>
-            <Navbar />
+            {renderNavbar()}
             <AuthGateCard
               portalName="Student Academic Portal"
               roleHint="Student Portal"
@@ -222,10 +231,26 @@ const AppContent: React.FC = () => {
 
     // Public & Auth Pages
     switch (currentPath) {
+      case '/timetable':
+        return (
+          <>
+            {renderNavbar()}
+            <main><TimetablePage /></main>
+            <Footer />
+          </>
+        );
+      case '/planner':
+        return (
+          <>
+            {renderNavbar()}
+            <main><PlannerPage /></main>
+            <Footer />
+          </>
+        );
       case '/about':
         return (
           <>
-            <Navbar />
+            {renderNavbar()}
             <main><AboutPage /></main>
             <Footer />
           </>
@@ -233,7 +258,7 @@ const AppContent: React.FC = () => {
       case '/features':
         return (
           <>
-            <Navbar />
+            {renderNavbar()}
             <main><FeaturesPage /></main>
             <Footer />
           </>
@@ -241,7 +266,7 @@ const AppContent: React.FC = () => {
       case '/how-it-works':
         return (
           <>
-            <Navbar />
+            {renderNavbar()}
             <main><HowItWorksPage /></main>
             <Footer />
           </>
@@ -249,7 +274,7 @@ const AppContent: React.FC = () => {
       case '/contact':
         return (
           <>
-            <Navbar />
+            {renderNavbar()}
             <main><ContactPage /></main>
             <Footer />
           </>
@@ -257,7 +282,7 @@ const AppContent: React.FC = () => {
       case '/faq':
         return (
           <>
-            <Navbar />
+            {renderNavbar()}
             <main><FaqPage /></main>
             <Footer />
           </>
@@ -265,7 +290,7 @@ const AppContent: React.FC = () => {
       case '/privacy':
         return (
           <>
-            <Navbar />
+            {renderNavbar()}
             <main><PrivacyPage /></main>
             <Footer />
           </>
@@ -273,7 +298,7 @@ const AppContent: React.FC = () => {
       case '/terms':
         return (
           <>
-            <Navbar />
+            {renderNavbar()}
             <main><TermsPage /></main>
             <Footer />
           </>
@@ -281,28 +306,28 @@ const AppContent: React.FC = () => {
       case '/signin':
         return (
           <>
-            <Navbar />
+            {renderNavbar()}
             <main className="flex-1"><SignInPage /></main>
           </>
         );
       case '/signup':
         return (
           <>
-            <Navbar />
+            {renderNavbar()}
             <main className="flex-1"><SignUpPage /></main>
           </>
         );
       case '/forgot-password':
         return (
           <>
-            <Navbar />
+            {renderNavbar()}
             <main className="flex-1"><ForgotPasswordPage /></main>
           </>
         );
       default:
         return (
           <>
-            <Navbar />
+            {renderNavbar()}
             <main><HomePage /></main>
             <Footer />
           </>
@@ -312,7 +337,19 @@ const AppContent: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 transition-colors duration-150">
-      {renderView()}
+      <motion.div
+        key={currentPath}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.22, ease: 'easeOut' }}
+        className="flex-1 flex flex-col"
+      >
+        {renderView()}
+      </motion.div>
+      <CommandPaletteModal 
+        isOpen={isCommandPaletteOpen} 
+        onClose={() => setIsCommandPaletteOpen(false)} 
+      />
     </div>
   );
 };
