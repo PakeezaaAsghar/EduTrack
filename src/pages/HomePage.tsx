@@ -22,6 +22,11 @@ import {
   Zap, ArrowUpRight, School, Laptop
 } from 'lucide-react';
 
+import authLibraryImage from '../assets/images/auth_education_library_1792272727886.jpg';
+import teacherAnalyticsImage from '../assets/images/teacher_classroom_analytics_1792272725585.jpg';
+import studentsStemImage from '../assets/images/students_collaborating_stem_1792272726934.jpg';
+import campusHeroImage from '../assets/images/modern_university_hero_1792343735348.jpg';
+
 // Campus Live Marquee Ticker
 const CampusLiveTicker: React.FC = () => {
   const tickerItems = [
@@ -456,7 +461,7 @@ export const HomePage: React.FC = () => {
               {heroVisualTab === 'photo' ? (
                 <InteractiveCard hoverY={-4} scale={1.008} className="relative rounded-2xl overflow-hidden border border-slate-700/80 shadow-2xl group transition-all duration-300">
                   <img
-                    src="/src/assets/images/modern_university_hero_1792343735348.jpg"
+                    src={campusHeroImage}
                     onError={(e) => {
                       (e.currentTarget as HTMLImageElement).src = '/assets/images/modern_university_hero_1792343735348.jpg';
                     }}
@@ -1262,11 +1267,15 @@ export const HomePage: React.FC = () => {
                   </div>
                 </div>
 
-                <InteractiveCard hoverY={-4} className="lg:col-span-5 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-md group">
+                <InteractiveCard hoverY={-4} className="lg:col-span-5 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-md group bg-slate-100 dark:bg-slate-800 relative">
                   <img
-                    src="/src/assets/images/auth_education_library_1792272727886.jpg"
+                    src={authLibraryImage}
+                    onError={(e) => {
+                      (e.currentTarget as HTMLImageElement).src = '/assets/images/auth_education_library_1792272727886.jpg';
+                    }}
                     alt="Administrator Library Operations"
-                    className="w-full h-72 object-cover transition-transform duration-500 group-hover:scale-105"
+                    className="w-full h-72 sm:h-80 object-cover object-center transition-transform duration-500 group-hover:scale-105 block"
+                    loading="lazy"
                   />
                 </InteractiveCard>
               </div>
@@ -1305,11 +1314,15 @@ export const HomePage: React.FC = () => {
                   </div>
                 </div>
 
-                <InteractiveCard hoverY={-4} className="lg:col-span-5 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-md group">
+                <InteractiveCard hoverY={-4} className="lg:col-span-5 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-md group bg-slate-100 dark:bg-slate-800 relative">
                   <img
-                    src="/src/assets/images/teacher_classroom_analytics_1792272725585.jpg"
+                    src={teacherAnalyticsImage}
+                    onError={(e) => {
+                      (e.currentTarget as HTMLImageElement).src = '/assets/images/teacher_classroom_analytics_1792272725585.jpg';
+                    }}
                     alt="Faculty reviewing analytics"
-                    className="w-full h-72 object-cover transition-transform duration-500 group-hover:scale-105"
+                    className="w-full h-72 sm:h-80 object-cover object-center transition-transform duration-500 group-hover:scale-105 block"
+                    loading="lazy"
                   />
                 </InteractiveCard>
               </div>
@@ -1348,11 +1361,15 @@ export const HomePage: React.FC = () => {
                   </div>
                 </div>
 
-                <InteractiveCard hoverY={-4} className="lg:col-span-5 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-md group">
+                <InteractiveCard hoverY={-4} className="lg:col-span-5 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-md group bg-slate-100 dark:bg-slate-800 relative">
                   <img
-                    src="/src/assets/images/students_collaborating_stem_1792272726934.jpg"
+                    src={studentsStemImage}
+                    onError={(e) => {
+                      (e.currentTarget as HTMLImageElement).src = '/assets/images/students_collaborating_stem_1792272726934.jpg';
+                    }}
                     alt="Students Collaborating"
-                    className="w-full h-72 object-cover transition-transform duration-500 group-hover:scale-105"
+                    className="w-full h-72 sm:h-80 object-cover object-center transition-transform duration-500 group-hover:scale-105 block"
+                    loading="lazy"
                   />
                 </InteractiveCard>
               </div>
@@ -1475,7 +1492,7 @@ export const HomePage: React.FC = () => {
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-indigo-900/40 group">
             <img
-              src="/src/assets/images/modern_university_hero_1792343735348.jpg"
+              src={campusHeroImage}
               onError={(e) => {
                 (e.currentTarget as HTMLImageElement).src = '/assets/images/modern_university_hero_1792343735348.jpg';
               }}

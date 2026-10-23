@@ -4,6 +4,7 @@ import {
   ShieldCheck, Target, HeartHandshake, Zap, 
   CheckCircle2, ArrowRight, Layers, Award, Clock 
 } from 'lucide-react';
+import authLibraryImage from '../assets/images/auth_education_library_1792272727886.jpg';
 
 export const AboutPage: React.FC = () => {
   const { navigate } = useEduTrack();
@@ -45,7 +46,10 @@ export const AboutPage: React.FC = () => {
             <div className="lg:col-span-6">
               <div className="rounded-2xl overflow-hidden border border-[#D4C4A8] dark:border-[#415A77] shadow-xl">
                 <img
-                  src="/src/assets/images/auth_education_library_1792272727886.jpg"
+                  src={authLibraryImage}
+                  onError={(e) => {
+                    (e.currentTarget as HTMLImageElement).src = '/assets/images/auth_education_library_1792272727886.jpg';
+                  }}
                   alt="Modern university library atrium"
                   className="w-full h-[380px] sm:h-[420px] object-cover"
                 />

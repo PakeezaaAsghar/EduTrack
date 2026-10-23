@@ -5,6 +5,8 @@ import {
   Calendar, FileText, ArrowRight, Download, AlertTriangle, 
   Clock, Shield, Sparkles, Filter 
 } from 'lucide-react';
+import studentsStemImage from '../assets/images/students_collaborating_stem_1792272726934.jpg';
+import teacherAnalyticsImage from '../assets/images/teacher_classroom_analytics_1792272725585.jpg';
 
 export const FeaturesPage: React.FC = () => {
   const { navigate, currentUser } = useEduTrack();
@@ -70,13 +72,15 @@ export const FeaturesPage: React.FC = () => {
           </div>
 
           <div className="lg:col-span-6">
-            <div className="rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-md">
+            <div className="rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-md bg-slate-100 dark:bg-slate-800">
               <img
-                src="/src/assets/images/students_collaborating_stem_1792272726934.jpg"
+                src={studentsStemImage}
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).src = '/assets/images/students_collaborating_stem_1792272726934.jpg';
+                }}
                 alt="Students collaborating"
                 className="w-full h-[340px] sm:h-[380px] object-cover"
                 loading="lazy"
-                referrerPolicy="no-referrer"
               />
             </div>
           </div>
@@ -90,13 +94,15 @@ export const FeaturesPage: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
             
             <div className="lg:col-span-6 order-2 lg:order-1">
-              <div className="rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-md">
+              <div className="rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-md bg-slate-100 dark:bg-slate-800">
                 <img
-                  src="/src/assets/images/teacher_classroom_analytics_1792272725585.jpg"
+                  src={teacherAnalyticsImage}
+                  onError={(e) => {
+                    (e.currentTarget as HTMLImageElement).src = '/assets/images/teacher_classroom_analytics_1792272725585.jpg';
+                  }}
                   alt="Teacher recording attendance"
                   className="w-full h-[340px] sm:h-[380px] object-cover"
                   loading="lazy"
-                  referrerPolicy="no-referrer"
                 />
               </div>
             </div>

@@ -6,7 +6,7 @@ import {
   AlertTriangle, History, FileText, Settings, Plus, 
   Search, Download, Upload, Trash2, Edit2, Check, 
   X, Filter, Eye, Printer, ChevronRight, RefreshCw, AlertCircle,
-  UserCircle, BarChart3
+  UserCircle, BarChart3, Database
 } from 'lucide-react';
 import { Student, Course, AttendanceStatus } from '../../types';
 import { AdminAnalyticsView } from './AdminAnalyticsView';
@@ -27,7 +27,8 @@ export const AdminDashboard: React.FC = () => {
     schedules, addScheduleItem, deleteScheduleItem, checkScheduleConflict,
     alerts, resolveAlert,
     activityLogs,
-    settings, updateSettings, resetAllData
+    settings, updateSettings, resetAllData,
+    supabaseConnected, supabaseStatus
   } = useEduTrack();
 
   const [activeTab, setActiveTab] = useState('overview');
@@ -1266,6 +1267,47 @@ export const AdminDashboard: React.FC = () => {
                   onChange={(e) => updateSettings({ institutionName: e.target.value })}
                   className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white"
                 />
+              </div>
+
+              {/* Supabase Cloud Database Integration Panel */}
+              <div className="pt-4 border-t border-slate-200 dark:border-slate-800 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                      <Database className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+                        <span>Supabase Cloud Integration</span>
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 font-mono font-medium border border-emerald-200 dark:border-emerald-800">
+                          Project: bijklibeveykmyjbzcik
+                        </span>
+                      </p>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                        {supabaseStatus}
+                      </p>
+                    </div>
+                  </div>
+                  <span className={`w-2.5 h-2.5 rounded-full ${supabaseConnected ? 'bg-emerald-500 ring-4 ring-emerald-500/20' : 'bg-amber-500 ring-4 ring-amber-500/20'}`} />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
+                  <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                    <p className="text-[10px] font-mono text-indigo-600 dark:text-indigo-400 uppercase font-semibold">Table 1</p>
+                    <p className="text-xs font-bold text-slate-900 dark:text-white">students_profile</p>
+                    <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">Syncs student signups, GPA, attendance & year</p>
+                  </div>
+                  <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                    <p className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 uppercase font-semibold">Table 2</p>
+                    <p className="text-xs font-bold text-slate-900 dark:text-white">teachers_profile</p>
+                    <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">Syncs faculty signups, titles & office hours</p>
+                  </div>
+                  <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                    <p className="text-[10px] font-mono text-amber-600 dark:text-amber-400 uppercase font-semibold">Table 3</p>
+                    <p className="text-xs font-bold text-slate-900 dark:text-white">admins_profile</p>
+                    <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">Syncs administrator accounts & permissions</p>
+                  </div>
+                </div>
               </div>
 
               <div className="pt-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">

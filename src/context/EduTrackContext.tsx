@@ -8,6 +8,11 @@ import {
   INITIAL_ATTENDANCE, INITIAL_GRADES, INITIAL_SCHEDULE, 
   INITIAL_NOTIFICATIONS, INITIAL_ACTIVITY_LOGS, INITIAL_ALERTS, DEFAULT_SETTINGS 
 } from '../data/mockData';
+import { 
+  supabase, testSupabaseConnection, 
+  syncUserSignUpToRoleTable, syncUserSignInToRoleTable, 
+  SUPABASE_PROJECT_ID 
+} from '../lib/supabase';
 
 interface EduTrackContextType {
   currentUser: User | null;
@@ -100,11 +105,32 @@ interface EduTrackContextType {
   currentPath: string;
   navigate: (path: string) => void;
   resetAllData: () => void;
+
+  // Supabase Integration
+  supabaseConnected: boolean;
+  supabaseStatus: string;
 }
 
 const EduTrackContext = createContext<EduTrackContextType | undefined>(undefined);
 
 export const EduTrackProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  // Supabase State
+  const [supabaseConnected, setSupabaseConnected] = useState<boolean>(false);
+  const [supabaseStatus, setSupabaseStatus] = useState<string>('Connecting to Supabase...');
+
+  useEffect(() => {
+    let isMounted = true;
+    testSupabaseConnection().then(res => {
+      if (isMounted) {
+        setSupabaseConnected(res.connected);
+        setSupabaseStatus(res.message);
+      }
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   // Navigation State with browser history sync
   const [currentPath, setCurrentPath] = useState<string>(() => {
     return window.location.pathname || '/';
@@ -290,6 +316,12 @@ export const EduTrackProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
     setCurrentUser(foundUser);
     logActivity('User Sign In', `${foundUser.name} signed into the portal`);
+
+    // Synchronize sign-in timestamp into role-specific Supabase table
+    syncUserSignInToRoleTable(foundUser).catch(err => {
+      console.warn('[Supabase Sync Signin Error]:', err);
+    });
+
     if (foundUser.role === 'admin') navigate('/admin');
     else if (foundUser.role === 'teacher') navigate('/teacher');
     else navigate('/student');
@@ -354,6 +386,11 @@ export const EduTrackProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     setUsers(prev => [...prev, newUser]);
     setCurrentUser(newUser);
     logActivity(`New ${role.toUpperCase()} Registered`, `${name} created a new ${role} account`);
+
+    // Synchronize full account info into separate Supabase role tables (students_profile, teachers_profile, or admins_profile)
+    syncUserSignUpToRoleTable(newUser, additionalInfo).catch(err => {
+      console.warn('[Supabase Sync Registration Error]:', err);
+    });
 
     if (role === 'admin') navigate('/admin');
     else if (role === 'teacher') navigate('/teacher');
@@ -904,7 +941,9 @@ export const EduTrackProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       toggleDarkMode,
       currentPath,
       navigate,
-      resetAllData
+      resetAllData,
+      supabaseConnected,
+      supabaseStatus
     }}>
       {children}
     </EduTrackContext.Provider>
